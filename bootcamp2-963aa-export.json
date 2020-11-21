@@ -1,0 +1,30 @@
+{
+  "flashcards" : {
+    "deck1" : {
+      "cards" : [ {
+        "back" : 2,
+        "front" : "1+1"
+      }, {
+        "back" : 1,
+        "front" : "1^(3x+2)"
+      }, {
+        "back" : 0,
+        "front" : "ln(1)"
+      } ],
+      "name" : "Dummy Deck Math"
+    },
+    "deck2" : {
+      "cards" : [ {
+        "back" : "Hitler",
+        "front" : "Adolf"
+      }, {
+        "back" : "Nevsky",
+        "front" : "Alexander"
+      }, {
+        "back" : "Emmanuel",
+        "front" : "Victor"
+      } ],
+      "name" : "Dummy Deck History"
+    }
+  }
+}
