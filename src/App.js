@@ -14,7 +14,7 @@ class App extends React.Component {
     };
   }
 
-  /*randomizeCards = () => {
+  randomizeCards = () => {
     const cards = this.state.cards.slice();
     for(let i = cards.length-1; i > 0; i--){
       const j = Math.floor(Math.random() * i);
@@ -22,12 +22,12 @@ class App extends React.Component {
       cards[i] = cards[j];
       cards[j] = temp;
     }
-    this.state.cards=cards;
-  };*/
+    this.setState({cards});
+  };
 
   addCard = card => {
     const cards = this.state.cards.slice().concat(card);
-    this.setState({ cards });
+    this.setState({cards});
   };
 
   deleteCard = index => {

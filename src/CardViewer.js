@@ -4,10 +4,13 @@ import './CardViewer.css';
 class CardViewer extends React.Component {
     constructor(props){
         super(props);
-        this.state = {current: 0, side: true, show: this.props.cards[0].front};
+        this.state = {current: 0, side: true};
     }
-    /*randomizeCards = () => this.props.randomizeCards();*/
-
+    randomizeCards = () => {
+        this.props.randomizeCards();
+        this.setState({current: 0});
+        this.setState({side: true});
+    };
     flipCard = () => {
         this.setState({side: !this.state.side});
     };
@@ -34,6 +37,7 @@ class CardViewer extends React.Component {
                 <button onClick={this.flipCard}>Flip Card</button>
                 <button onClick={this.prevCard}>Previous Card</button>
                 <button onClick={this.nextCard}>Next Card</button>
+                <button onClick={this.randomizeCards}>Randomize Cards</button>
                 <hr/>
                 <button onClick={this.props.switchMode}>Go to Card Editor</button>
             </div>
