@@ -1,31 +1,58 @@
 import React from "react";
 import './CardEditor.css';
+
+import {Link, withRouter} from "react-router-dom";
+import {firebaseConnect} from 'react-redux-firebase';
+import {compose} from 'redux';
 class CardEditor extends React.Component {
     constructor(props){
         super(props);
-        this.state = { front: '', back: ''};
+        this.state = {cards: [
+            { front: 'front1', back: 'back1', starred: false},
+            { front: 'front2', back: 'back2', starred: false}
+          ], front: '', back: '', deckName: '', desc: ''};
 
     }
-
+    
+    deleteCard = index => {
+        const cards = this.state.cards.slice();
+        cards.splice(index, 1);
+        this.setState({cards});
+      };
     addCard = () => {
         if (this.state.front.slice().trim()!=='' && this.state.back.slice().trim()!==''){
-            this.props.addCard(this.state);
+            const card ={front : this.state.front, back : this.state.back, starred: false};
+            const cards = this.state.cards.slice().concat(card);
+            this.setState({cards});
             this.setState({front: '', back: ''});
         }
     };
 
-    deleteCard = index => this.props.deleteCard(index);
+    addDeck = () => {
+        if (this.state.deckName.slice().trim() && !this.state.front.slice().trim() && !this.state.back.slice().trim() && this.state.cards.length){
+            const deckId = this.props.firebase.push('/flashcards').key;
+            const Deck = {cards: this.state.cards, name: this.state.deckName, desc: this.state.desc, saved: false};
+            const onComplete = () => {
+                console.log("Database Updated");
+                this.props.history.push(`/viewer/${deckId}`);
+            };
+            var updates={};
+            updates[`/flashcards/${deckId}`]=Deck;
+            updates[`/homepage/${deckId}`]={ name: Deck["name"], desc: Deck["desc"], saved:Deck["saved"]};
+            this.props.firebase.update("/", updates, onComplete);
+        }
+    };
 
     editCard = index => {
-        this.setState({front: this.props.cards[index].front, back: this.props.cards[index].back});
-        this.props.deleteCard(index);
+        this.setState({front: this.state.cards[index].front, back: this.state.cards[index].back});
+        this.deleteCard(index);
     };
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value});
     };
     render() {
-        const cards = this.props.cards.map((card, index) =>{
+        const cards = this.state.cards.map((card, index) =>{
             return (
                 <tr key={index}>
                     <td>{index+1}</td>
@@ -71,11 +98,25 @@ class CardEditor extends React.Component {
                 placeholder="Back of Card"
                 value={this.state.back} />
             <button onClick={this.addCard}>Add Card</button>
-            <hr/>
-            <Link to="/viewer">Go to Card Viewer</Link>
+            <br/>
+            <br/>
+            <input
+            name = 'deckName'
+                onChange={this.handleChange}
+                placeholder="Name of Deck"
+                value={this.state.deckName} />
+            
+            <input
+            name = 'desc'
+                onChange={this.handleChange}
+                placeholder="Deck Description"
+                value={this.state.desc} />
+            <button onClick={this.addDeck}>Add Deck</button>
+            <br/>
+            <Link to="/">Home</Link>
         </div>);
 
         }
     }
 
-export default CardEditor;
+export default compose(firebaseConnect(), withRouter)(CardEditor);
